@@ -12,9 +12,11 @@ defmodule Rumbl.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
-    user
-    |> cast(attrs, [:name, :username, :password, :password_hash])
-    |> validate_required([:name, :username, :password, :password_hash])
+  def changeset(model, params \\ :empty) do
+    model
+    |> cast(params, ~w(name username), [])
+    |> validate_required([:name, :username])
+    |> validate_length(:name, min: 1)
+    |> validate_length(:username, min: 1, max: 20)
   end
 end
