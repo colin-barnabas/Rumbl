@@ -24,6 +24,7 @@ defmodule RumblWeb.UserController do
     case Repo.insert(changeset) do 
       {:ok, user} ->
         conn
+        |> RumblWeb.Auth.login(user)
         |> put_flash(:info, "#{user.name} created!")
         |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
@@ -36,7 +37,7 @@ defmodule RumblWeb.UserController do
       conn
     else
       conn
-      |> put_flash(:error, "You must be logged in to access the page")
+      |> put_flash(:error, "You must be logged in to access that page")
       |> redirect(to: page_path(conn, :index))
       |> halt()
     end
