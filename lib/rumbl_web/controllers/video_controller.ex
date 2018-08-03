@@ -43,16 +43,17 @@ defmodule RumblWeb.VideoController do
     render(conn, "show.html", video: video)
   end
 
-  def edit(conn, %{"id" => id}) do
-    video = Videos.get_video!(id)
+  def edit(conn, %{"id" => id}, user) do
+    video = Repo.get!(user_videos(user), id)
     changeset = Videos.change_video(video)
     render(conn, "edit.html", video: video, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "video" => video_params}) do
-    video = Videos.get_video!(id)
+  def update(conn, %{"id" => id, "video" => video_params}, user) do
+    video = Repo.get!(user_videos(user), id)
+    changeset = Video.changeset(video, video_params)
 
-    case Videos.update_video(video, video_params) do
+    case Repo.update(changeset) do
       {:ok, video} ->
         conn
         |> put_flash(:info, "Video updated successfully.")
@@ -62,8 +63,8 @@ defmodule RumblWeb.VideoController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    video = Videos.get_video!(id)
+  def delete(conn, %{"id" => id}, user) do
+    video = Repo.get!(user_videos(user), id)
     {:ok, _video} = Videos.delete_video(video)
 
     conn
