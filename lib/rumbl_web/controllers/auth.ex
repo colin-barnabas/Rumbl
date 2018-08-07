@@ -2,31 +2,23 @@ defmodule RumblWeb.Auth do
   import Phoenix.Controller
   import Plug.Conn
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
+  alias Rumbl.Accounts
 
   alias RumblWeb.Router.Helpers, as: Routes
 
-  def login_by_username_and_pass(conn, username, given_pass, opts) do
-    repo = Keyword.fetch!(opts, :repo)
-    user = repo.get_by(Rumbl.User, username: username)
-
-    cond do
-      user && checkpw(given_pass, user.password_hash) ->
-        {:ok, login(conn, user)}
-      user ->
-        {:error, :unauthorized, conn}
-      true ->
-        dummy_checkpw()
-        {:error, :not_found, conn}
+  def login_by_email_and_pass(conn, email, given_pass) do
+    case Accounts.authenticate_by_email_and_pass(email, given_pass) do
+      {:ok, user} -> {:ok, login(conn, user)}
+      {:error, :unauthorized} -> {:error, :unauthorized, conn}
+      {:error, :not_found} -> {:error, :not_found, conn}
     end
   end
 
-  def init(opts) do
-    Keyword.fetch!(opts, :repo)
-  end
+  def init(opts), do: opts
 
   def call(conn, repo) do
     user_id = get_session(conn, :user_id)
-    user = user_id && repo.get(Rumbl.User, user_id)
+    user = user_id && Accounts.get_user(user_id)
     assign(conn, :current_user, user)
   end
 
