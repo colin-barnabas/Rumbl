@@ -17,3 +17,6 @@ config :rumbl, Rumbl.Repo,
   database: "rumbl_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Set hashing rounds for testing
+config :pbkdf2_elixir, :rounds, 1
