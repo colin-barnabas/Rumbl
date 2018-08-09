@@ -37,7 +37,7 @@ defmodule Rumbl.Accounts do
         {:error, :unauthorized}
 
       true -> 
-        Comeonin.Bcrypt.dummy_checkpw() # Dummy checkpw simulates a password check with variable timing
+        Comeonin.Pbkdf2.dummy_checkpw() # Dummy checkpw simulates a password check with variable timing
         {:error, :not_found}
     end
   end

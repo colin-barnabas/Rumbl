@@ -7,7 +7,7 @@ defmodule RumblWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug RumblWeb.Auth
+    plug RumblWeb.Auth # Plug main interface call() adds :current_user to assigns. @current_user Used in views
   end
 
   pipeline :api do
