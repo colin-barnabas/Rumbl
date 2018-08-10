@@ -120,6 +120,7 @@ defmodule Rumbl.Multimedia do
     |> user_videos_query(user)
     |> Repo.one!()
     |> preload_user()
+    |> preload_category()
   end
 
   defp user_videos_query(query, %Accounts.User{id: user_id}) do
@@ -143,5 +144,9 @@ defmodule Rumbl.Multimedia do
 
   defp preload_user(video_or_videos) do
     Repo.preload(video_or_videos, :user)
+  end
+
+  defp preload_category(video_or_videos) do
+      Repo.preload(video_or_videos, :category)
   end
 end
